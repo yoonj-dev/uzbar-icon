@@ -77,13 +77,15 @@ def build_uz_asset(
   </text>
 </svg>"""
 
-    output_path = os.path.join(output_dir, f"uz{name}-{label_pos}.svg")
+    output_path = os.path.join(output_dir, f"icon-{label_pos}.svg")
     with open(output_path, "w", encoding="utf-8") as f:
         f.write(final_svg)
     print(f"✔️ 성공: {output_path} 생성 완료!")
 
 
-def generate_icons(in_path: Path, out_dir: Path, label_positions: List[str]) -> None:
+def generate_icons(
+    in_path: Path, out_dir: Path, label_positions: List[str], use_subdir: bool = False
+) -> None:
     uz_services: List[dict] = []
 
     if in_path.is_file() and in_path.suffix.lower() == ".json":
@@ -107,12 +109,14 @@ def generate_icons(in_path: Path, out_dir: Path, label_positions: List[str]) -> 
             print(f"Error: Missing required keys in {service}")
             sys.exit(1)
 
+        target_dir = out_dir / service["name"] if use_subdir else out_dir
+
         for pos in label_positions:
             build_uz_asset(
                 name=service["name"],
                 icon_name=service["icon"],
                 colors=service["colors"],
-                output_dir=out_dir,
+                output_dir=target_dir,
                 label_pos=pos,
             )
 
@@ -121,15 +125,17 @@ def main():
     parser = argparse.ArgumentParser(description="uzbar icon generator")
     parser.add_argument("--icon", action="store_true", help="Generate icon")
     parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Process all icons in input/ and output to output/{name}/",
+    )
+    parser.add_argument(
         "--in",
         dest="in_file",
         type=str,
-        required=True,
         help="Input JSON file or directory",
     )
-    parser.add_argument(
-        "--out", type=str, default="./output/icon", help="Output directory"
-    )
+    parser.add_argument("--out", type=str, help="Output directory")
     # 라벨 위치 옵션
     parser.add_argument(
         "--center",
@@ -149,22 +155,36 @@ def main():
         print("Please provide --icon flag to generate icons.")
         sys.exit(1)
 
-    in_path = Path(args.in_file)
-    out_dir = Path(args.out)
-
-    label_positions = []
-    if args.center:
-        label_positions.append("center")
-    if args.bottom:
-        label_positions.append("bottom")
-    if args.below:
-        label_positions.append("below")
-
-    # 아무것도 지정되지 않았으면 3가지 전부 생성
-    if not label_positions:
+    # --all 이면 기본값 설정
+    if args.all:
+        in_path = Path(args.in_file) if args.in_file else Path("./input")
+        out_dir = Path(args.out) if args.out else Path("./output")
         label_positions = ["center", "bottom", "below"]
+        use_subdir = True
+    else:
+        if not args.in_file:
+            print(
+                "Error: the following arguments are required: --in (unless --all is specified)"
+            )
+            sys.exit(1)
 
-    generate_icons(in_path, out_dir, label_positions)
+        in_path = Path(args.in_file)
+        out_dir = Path(args.out) if args.out else Path("./output/icon")
+        use_subdir = False
+
+        label_positions = []
+        if args.center:
+            label_positions.append("center")
+        if args.bottom:
+            label_positions.append("bottom")
+        if args.below:
+            label_positions.append("below")
+
+        # 아무것도 지정되지 않았으면 3가지 전부 생성
+        if not label_positions:
+            label_positions = ["center", "bottom", "below"]
+
+    generate_icons(in_path, out_dir, label_positions, use_subdir=use_subdir)
 
 
 if __name__ == "__main__":
