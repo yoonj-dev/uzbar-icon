@@ -1,0 +1,9 @@
+{
+  "name": "Medi",
+  "icon": "pill",
+  "colors": {
+    "label": "#14b8a6",
+    "icon": "#14b8a6",
+    "background": "#0f172a"
+  }
+}

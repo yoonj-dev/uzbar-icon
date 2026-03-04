@@ -1,0 +1,9 @@
+{
+  "name": "Blog",
+  "icon": "pen-tool",
+  "colors": {
+    "label": "#3b82f6",
+    "icon": "#3b82f6",
+    "background": "#0f172a"
+  }
+}

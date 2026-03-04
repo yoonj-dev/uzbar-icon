@@ -1,0 +1,9 @@
+{
+  "name": "ETF",
+  "icon": "layers",
+  "colors": {
+    "label": "#8b5cf6",
+    "icon": "#8b5cf6",
+    "background": "#0f172a"
+  }
+}

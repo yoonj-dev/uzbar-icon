@@ -1,0 +1,9 @@
+{
+  "name": "TDF",
+  "icon": "target",
+  "colors": {
+    "label": "#ef4444",
+    "icon": "#ef4444",
+    "background": "#0f172a"
+  }
+}

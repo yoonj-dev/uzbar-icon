@@ -1,0 +1,9 @@
+{
+  "name": "Vlog",
+  "icon": "video",
+  "colors": {
+    "label": "#ec4899",
+    "icon": "#ec4899",
+    "background": "#0f172a"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "Bar",
+  "icon": "beer",
+  "colors": {
+    "label": "#f59e0b",
+    "icon": "#f59e0b",
+    "background": "#0f172a"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "Stock",
+  "icon": "chart-no-axes-combined",
+  "colors": {
+    "label": "#10b981",
+    "icon": "#10b981",
+    "background": "#0f172a"
+  }
+}

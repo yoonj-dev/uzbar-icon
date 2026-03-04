@@ -1,0 +1,9 @@
+{
+  "name": "Trip",
+  "icon": "plane",
+  "colors": {
+    "label": "#0ea5e9",
+    "icon": "#0ea5e9",
+    "background": "#0f172a"
+  }
+}
