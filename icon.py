@@ -4,6 +4,7 @@ import os
 import re
 import sys
 from pathlib import Path
+from typing import Dict, List
 
 import requests
 
@@ -23,7 +24,13 @@ def fetch_lucide_icon(icon_name: str) -> str:
         return ""
 
 
-def build_uz_asset(name: str, icon_name: str, colors: dict, output_dir: Path) -> None:
+def build_uz_asset(
+    name: str,
+    icon_name: str,
+    colors: Dict[str, str],
+    output_dir: Path,
+    label_pos: str = "center",
+) -> None:
     os.makedirs(output_dir, exist_ok=True)
 
     raw_svg = fetch_lucide_icon(icon_name)
@@ -48,6 +55,13 @@ def build_uz_asset(name: str, icon_name: str, colors: dict, output_dir: Path) ->
     </g>
     """
 
+    # 라벨 위치에 따른 y 좌표 계산 (중앙: 275, 하단: 366, 아래: 446)
+    label_y = 275
+    if label_pos == "bottom":
+        label_y = 366
+    elif label_pos == "below":
+        label_y = 446
+
     final_svg = f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
     <filter id="glow-{name}" x="-20%" y="-20%" width="140%" height="140%">
@@ -57,7 +71,7 @@ def build_uz_asset(name: str, icon_name: str, colors: dict, output_dir: Path) ->
   </defs>
   <rect width="512" height="512" rx="120" fill="{colors["background"]}" />
   {styled_icon}
-  <text x="256" y="275" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif">
+  <text x="256" y="{label_y}" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif">
     <tspan fill="#94a3b8" font-weight="300" font-size="80">uz</tspan>
     <tspan fill="{colors["label"]}" font-weight="900" font-size="80" filter="url(#glow-{name})">{name}</tspan>
   </text>
@@ -67,6 +81,38 @@ def build_uz_asset(name: str, icon_name: str, colors: dict, output_dir: Path) ->
     with open(output_path, "w", encoding="utf-8") as f:
         f.write(final_svg)
     print(f"✔️ 성공: {output_path} 생성 완료!")
+
+
+def generate_icons(in_path: Path, out_dir: Path, label_pos: str) -> None:
+    uz_services: List[dict] = []
+
+    if in_path.is_file() and in_path.suffix.lower() == ".json":
+        with open(in_path, "r", encoding="utf-8") as f:
+            uz_services.append(json.load(f))
+    elif in_path.is_dir():
+        for file in os.listdir(in_path):
+            if file.endswith(".json"):
+                with open(in_path / file, "r", encoding="utf-8") as f:
+                    uz_services.append(json.load(f))
+    else:
+        print(
+            f"Error: Invalid input path '{in_path}'. Must be a JSON file or a directory containing JSON files."
+        )
+        sys.exit(1)
+
+    required_keys = ["name", "icon", "colors"]
+
+    for service in uz_services:
+        if not all(key in service for key in required_keys):
+            print(f"Error: Missing required keys in {service}")
+            sys.exit(1)
+        build_uz_asset(
+            name=service["name"],
+            icon_name=service["icon"],
+            colors=service["colors"],
+            output_dir=out_dir,
+            label_pos=label_pos,
+        )
 
 
 def main():
@@ -82,6 +128,13 @@ def main():
     parser.add_argument(
         "--out", type=str, default="./output/icon", help="Output directory"
     )
+    # 라벨 위치 옵션
+    parser.add_argument(
+        "--bottom", action="store_true", help="Align label bottom with icon bottom"
+    )
+    parser.add_argument(
+        "--below", action="store_true", help="Place label directly below icon"
+    )
 
     args = parser.parse_args()
 
@@ -92,28 +145,13 @@ def main():
     in_path = Path(args.in_file)
     out_dir = Path(args.out)
 
-    uz_services = []
-    if in_path.is_file() and in_path.suffix.lower() == ".json":
-        with open(in_path, "r", encoding="utf-8") as f:
-            uz_services.append(json.load(f))
-    elif in_path.is_dir():
-        for file in os.listdir(in_path):
-            if file.endswith(".json"):
-                with open(in_path / file, "r", encoding="utf-8") as f:
-                    uz_services.append(json.load(f))
-    else:
-        print(
-            f"Error: Invalid input path '{in_path}'. Must be a JSON file or a directory containing JSON files."
-        )
-        sys.exit(1)
+    label_pos = "center"
+    if args.below:
+        label_pos = "below"
+    elif args.bottom:
+        label_pos = "bottom"
 
-    for service in uz_services:
-        build_uz_asset(
-            name=service.get("name"),
-            icon_name=service.get("icon"),
-            colors=service.get("colors"),
-            output_dir=out_dir,
-        )
+    generate_icons(in_path, out_dir, label_pos)
 
 
 if __name__ == "__main__":
