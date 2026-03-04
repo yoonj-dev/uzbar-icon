@@ -77,13 +77,13 @@ def build_uz_asset(
   </text>
 </svg>"""
 
-    output_path = os.path.join(output_dir, f"uz{name}.svg")
+    output_path = os.path.join(output_dir, f"uz{name}-{label_pos}.svg")
     with open(output_path, "w", encoding="utf-8") as f:
         f.write(final_svg)
     print(f"✔️ 성공: {output_path} 생성 완료!")
 
 
-def generate_icons(in_path: Path, out_dir: Path, label_pos: str) -> None:
+def generate_icons(in_path: Path, out_dir: Path, label_positions: List[str]) -> None:
     uz_services: List[dict] = []
 
     if in_path.is_file() and in_path.suffix.lower() == ".json":
@@ -106,13 +106,15 @@ def generate_icons(in_path: Path, out_dir: Path, label_pos: str) -> None:
         if not all(key in service for key in required_keys):
             print(f"Error: Missing required keys in {service}")
             sys.exit(1)
-        build_uz_asset(
-            name=service["name"],
-            icon_name=service["icon"],
-            colors=service["colors"],
-            output_dir=out_dir,
-            label_pos=label_pos,
-        )
+
+        for pos in label_positions:
+            build_uz_asset(
+                name=service["name"],
+                icon_name=service["icon"],
+                colors=service["colors"],
+                output_dir=out_dir,
+                label_pos=pos,
+            )
 
 
 def main():
@@ -130,6 +132,11 @@ def main():
     )
     # 라벨 위치 옵션
     parser.add_argument(
+        "--center",
+        action="store_true",
+        help="Align label center (default if no other pos specified)",
+    )
+    parser.add_argument(
         "--bottom", action="store_true", help="Align label bottom with icon bottom"
     )
     parser.add_argument(
@@ -145,13 +152,19 @@ def main():
     in_path = Path(args.in_file)
     out_dir = Path(args.out)
 
-    label_pos = "center"
+    label_positions = []
+    if args.center:
+        label_positions.append("center")
+    if args.bottom:
+        label_positions.append("bottom")
     if args.below:
-        label_pos = "below"
-    elif args.bottom:
-        label_pos = "bottom"
+        label_positions.append("below")
 
-    generate_icons(in_path, out_dir, label_pos)
+    # 아무것도 지정되지 않았으면 3가지 전부 생성
+    if not label_positions:
+        label_positions = ["center", "bottom", "below"]
+
+    generate_icons(in_path, out_dir, label_positions)
 
 
 if __name__ == "__main__":
