@@ -12,8 +12,8 @@ dependencies = [
 requires-python = ">=3.8"
 
 [tool.setuptools]
-py-modules = ["icon"]
+py-modules = ["icon", "logo", "common"]
 
 [project.scripts]
-uzbar = "icon:main"
+uzbar = "cli:main"
 

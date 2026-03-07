@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    
+    <filter id="glow-Youtube" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    
+  </defs>
+  
+  
+                <g stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.15" transform="translate(106, 106) scale(12.5)">
+                    
+  <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" />
+  <path d="m10 15 5-3-5-3z" />
+
+                </g>
+                
+  <text x="256" y="275" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif">
+    <tspan fill="#94a3b8" font-weight="300" font-size="80">uz</tspan>
+    <tspan fill="#ef4444" font-weight="900" font-size="80" filter="url(#glow-Youtube)">Youtube</tspan>
+  </text>
+</svg>
