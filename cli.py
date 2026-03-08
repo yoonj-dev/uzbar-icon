@@ -28,12 +28,9 @@ def main():
 
     # 공통 옵션
     common_group = parser.add_argument_group("Common Options")
-    common_group.add_argument(
-        "--bg", action="store_true", default=True, help="Include background (default)"
-    )
-    common_group.add_argument(
-        "--no-bg", dest="bg", action="store_false", help="Exclude background"
-    )
+    common_group.add_argument("--bg", action="store_true", help="Include background")
+    common_group.add_argument("--no-bg", action="store_true", help="Exclude background")
+
     common_group.add_argument(
         "--no-img", action="store_true", help="Exclude icon/emoji (text only)"
     )
@@ -71,6 +68,15 @@ def main():
     if not label_positions or args.all:
         label_positions = ["center", "bottom", "below"]
 
+    # 배경 모드 결정
+    bg_modes = []
+    if args.bg:
+        bg_modes.append(True)
+    if args.no_bg:
+        bg_modes.append(False)
+    if not bg_modes:
+        bg_modes = [True, False]
+
     # 실행
     include_icon = not args.no_img
 
@@ -79,11 +85,11 @@ def main():
             print("🚀 Generating icons...")
             target_icon_dir = out_dir if use_subdir else out_dir / "icon"
             icon.generate_icons(
-                in_path,
+                args.in_file if args.in_file else Path("./input"),
                 target_icon_dir,
                 label_positions,
+                bg_modes,
                 use_subdir=use_subdir,
-                include_bg=args.bg,
                 include_icon=include_icon,
             )
 
@@ -91,10 +97,10 @@ def main():
             print("🚀 Generating logos...")
             target_logo_dir = out_dir if use_subdir else out_dir / "logo"
             logo.generate_logos(
-                in_path,
+                args.in_file if args.in_file else Path("./input"),
                 target_logo_dir,
+                bg_modes,
                 use_subdir=use_subdir,
-                include_bg=args.bg,
                 include_icon=include_icon,
             )
 

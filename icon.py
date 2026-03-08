@@ -82,22 +82,24 @@ def generate_icons(
     in_path: Path,
     out_dir: Path,
     label_positions: List[str],
+    bg_modes: List[bool],
     use_subdir: bool = False,
-    include_bg: bool = True,
     include_icon: bool = True,
 ) -> None:
+
     uz_services = common.load_services(in_path)
 
     for service in uz_services:
         target_dir = out_dir / service["name"] if use_subdir else out_dir
 
         for pos in label_positions:
-            build_uz_asset(
-                name=service["name"],
-                icon_val=service["icon"],
-                colors=service["colors"],
-                output_dir=target_dir,
-                label_pos=pos,
-                include_bg=include_bg,
-                include_icon=include_icon,
-            )
+            for bg_mode in bg_modes:
+                build_uz_asset(
+                    name=service["name"],
+                    icon_val=service["icon"],
+                    colors=service["colors"],
+                    output_dir=target_dir,
+                    label_pos=pos,
+                    include_bg=bg_mode,
+                    include_icon=include_icon,
+                )

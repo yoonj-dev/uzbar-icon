@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List
 
 import common
 
@@ -98,19 +98,21 @@ def build_uz_logo(
 def generate_logos(
     in_path: Path,
     out_dir: Path,
+    bg_modes: List[bool],
     use_subdir: bool = False,
-    include_bg: bool = True,
     include_icon: bool = True,
 ) -> None:
+
     uz_services = common.load_services(in_path)
 
     for service in uz_services:
         target_dir = out_dir / service["name"] if use_subdir else out_dir
-        build_uz_logo(
-            name=service["name"],
-            icon_val=service["icon"],
-            colors=service["colors"],
-            output_dir=target_dir,
-            include_bg=include_bg,
-            include_icon=include_icon,
-        )
+        for bg_mode in bg_modes:
+            build_uz_logo(
+                name=service["name"],
+                icon_val=service["icon"],
+                colors=service["colors"],
+                output_dir=target_dir,
+                include_bg=bg_mode,
+                include_icon=include_icon,
+            )
