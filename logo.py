@@ -89,7 +89,7 @@ def build_uz_logo(
     if not include_icon:
         suffix += "-no-img"
 
-    output_path = os.path.join(output_dir, f"logo-horizontal{suffix}.svg")
+    output_path = os.path.join(output_dir, f"logo{suffix}.svg")
     with open(output_path, "w", encoding="utf-8") as f:
         f.write(final_svg)
     print(f"✔️ 성공: {output_path} 생성 완료!")
