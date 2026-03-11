@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "uzbar-icon"
+name = "ontap"
 version = "0.1.0"
 description = "uzbar icon generator"
 dependencies = [
@@ -12,8 +12,8 @@ dependencies = [
 requires-python = ">=3.8"
 
 [tool.setuptools]
-py-modules = ["cli", "icon", "logo", "common"]
+py-modules = ["cli", "icon", "logo", "common", "react_gen"]
 
 [project.scripts]
-uzbar = "cli:main"
+ontap = "cli:main"
 

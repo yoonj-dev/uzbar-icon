@@ -7,7 +7,7 @@ import logo
 
 
 def main():
-    parser = argparse.ArgumentParser(description="uzbar - Unified Asset Generator")
+    parser = argparse.ArgumentParser(description="ontap - Unified Asset Generator")
 
     # 작업 모드
     mode_group = parser.add_argument_group("Job Modes")
@@ -16,7 +16,7 @@ def main():
         "--logo", action="store_true", help="Generate horizontal logos"
     )
     mode_group.add_argument(
-        "--all", action="store_true", help="Generate all assets (icon, logo, etc.)"
+        "--all", action="store_true", help="Generate all assets (icon, logo)"
     )
 
     # 입출력 설정
@@ -30,9 +30,13 @@ def main():
     common_group = parser.add_argument_group("Common Options")
     common_group.add_argument("--bg", action="store_true", help="Include background")
     common_group.add_argument("--no-bg", action="store_true", help="Exclude background")
-
     common_group.add_argument(
         "--no-img", action="store_true", help="Exclude icon/emoji (text only)"
+    )
+    common_group.add_argument(
+        "--react",
+        action="store_true",
+        help="Generate React components (.tsx) instead of SVG",
     )
 
     # 아이콘 전용 옵션
@@ -85,23 +89,25 @@ def main():
             print("🚀 Generating icons...")
             target_icon_dir = out_dir if use_subdir else out_dir / "icon"
             icon.generate_icons(
-                args.in_file if args.in_file else Path("./input"),
-                target_icon_dir,
-                label_positions,
-                bg_modes,
+                in_path=in_path,
+                out_dir=target_icon_dir,
+                label_positions=label_positions,
+                bg_modes=bg_modes,
                 use_subdir=use_subdir,
                 include_icon=include_icon,
+                as_react=args.react,
             )
 
         if args.logo or args.all:
             print("🚀 Generating logos...")
             target_logo_dir = out_dir if use_subdir else out_dir / "logo"
             logo.generate_logos(
-                args.in_file if args.in_file else Path("./input"),
-                target_logo_dir,
-                bg_modes,
+                in_path=in_path,
+                out_dir=target_logo_dir,
+                bg_modes=bg_modes,
                 use_subdir=use_subdir,
                 include_icon=include_icon,
+                as_react=args.react,
             )
 
         print("\n✨ All tasks completed successfully!")

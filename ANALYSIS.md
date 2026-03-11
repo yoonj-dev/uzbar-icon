@@ -1,20 +1,23 @@
-# 분석 (Analysis) - Unified Asset Generator (UAG)
+# 분석 (Analysis) - Unified Asset Generator (UAG) / "on Tap" Edition
 
-## 1. 개요
-기존 단일 스크립트(`icon.py`)에서 통합 에셋 생성 도구(UAG)로 구조가 확장되었습니다. 이제 아이콘 뿐만 아니라 가로형 로고 생성을 지원하며, 코드 베이스가 모듈화되었습니다.
+## 1. 브랜드 개요: "on Tap"
+기존 **uz{Service}** 브랜딩을 생맥주 펍의 탭(Tap)에서 영감을 받은 **{Service} on Tap** 컨셉으로 전환하였습니다. 
+- **의미**: "언제든 수도꼭지를 틀면 나오듯 즉각적으로 제공되는 프리미엄 서비스"
+- **시각적 키워드**: Neon, Pub, Brick, Flow, Amber Glow, Tactile.
 
-## 2. 변경된 구조 및 구성 요소
-- **`cli.py`**: 통합 진입점. `--icon`, `--logo`, `--all` 모드와 각 모드별 상세 옵션을 처리합니다.
-- **`common.py`**: 아이콘 다운로드, SVG 추출, 데이터 로더, 이모지 판별 등 유틸리티 관리.
-- **`icon.py`**: 정방형 아이콘 생성. 라벨 위치(`center`, `bottom`, `below`) 옵션 지원.
-- **`logo.py`**: 로고 생성. 가로형 배치를 기본으로 정적 너비 추정 및 렌더링.
-- **`pyproject.toml`**: `uzbar` 명령어를 통한 CLI 접근 지원.
+## 2. 디자인 시스템
+- **배경**: 심야의 펍 벽면을 연상시키는 다크 톤(#0a0a0c) 및 미세한 벽돌(Brick) 패턴.
+- **주요 요소**: 
+  - **Beer Tap**: 서비스 고유 컬러의 네온 광택을 머금은 맥주 탭 핸들 실루엣.
+  - **Animating Drip**: 탭에서 떨어지는 물방울 애니메이션을 통해 '흐름(Flow)'을 시각화.
+- **타이포그래피**: 'uz' 접두사를 제거하고 서비스 명칭(예: Stock, Youtube)만 볼드하게 강조. 네온 글로우 필터를 적용하여 시인성 확보.
 
-## 3. 파일명 규칙 (최종)
-- 모든 파일명에서 서비스 명칭(`name`)을 제거하고 고정된 명칭을 사용합니다.
-- 이는 서비스별 폴더(`--out`) 하위에 자산을 격리하여 관리하는 것을 전제로 합니다.
-- **아이콘**: `icon-{pos}{suffix}.svg`
-- **로고**: `logo{suffix}.svg`
-- **접미사(suffix)**:
-  - `-transparent`: 배경색 없는 경우
-  - `-no-img`: 아이콘/이모지 없는 경우
+## 3. 에셋 레이아웃
+- **Icon**: 512x512 정방형. 중앙에 서비스명, 배경에 탭 실루엣과 벽돌 패턴 배치.
+- **Logo**: 가변 너비. 좌측 텍스트, 우측 탭 실루엣 배치. 하단 정렬(Base-line) 유지.
+
+## 4. 기술적 구현
+- **React 통합**: `--react` 옵션을 통해 SVG를 TSX 컴포넌트로 즉시 변환. CamelCase 자동 변환 및 Props 투과 전달.
+- **`react_gen.py`**: SVG를 TSX 컴포넌트로 변환하는 엔진.
+- **`pyproject.toml`**: `ontap` 명령어를 통한 CLI 접근 지원.
+- **모듈화**: `cli`, `common`, `icon`, `logo`, `react_gen`으로 역할 분담.

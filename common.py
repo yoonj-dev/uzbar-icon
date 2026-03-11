@@ -70,11 +70,49 @@ def load_services(in_path: Path) -> List[dict]:
     return uz_services
 
 
-def get_glow_filter(name: str) -> str:
+def get_glow_filter(name: str, color: str = "#ffffff") -> str:
     """텍스트나 아이콘에 적용할 Glow 필터 정의를 반환합니다."""
     return f"""
     <filter id="glow-{name}" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feFlood flood-color="{color}" flood-opacity="0.5" result="flood" />
+      <feComposite in="flood" in2="blur" operator="in" result="glow" />
+      <feMerge>
+        <feMergeNode in="glow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="tap-glow">
+      <feGaussianBlur stdDeviation="4" result="blur" />
       <feComposite in="SourceGraphic" in2="blur" operator="over" />
     </filter>
+    """
+
+
+def get_brick_pattern() -> str:
+    """배경에 사용할 미세한 벽주 패턴을 반환합니다."""
+    return """
+    <pattern id="brick-pattern" x="0" y="0" width="100" height="50" patternUnits="userSpaceOnUse">
+      <rect width="100" height="50" fill="none" stroke="#ffffff" stroke-width="0.5" stroke-opacity="0.05" />
+      <path d="M50 0 V50 M0 25 H100" stroke="#ffffff" stroke-width="0.5" stroke-opacity="0.05" />
+    </pattern>
+    """
+
+
+def get_beer_tap_components(name: str, color: str) -> str:
+    """Beer Tap 실루엣과 애니메이션 물방울을 반환합니다."""
+    return f"""
+    <g transform="translate(380, 0) scale(1.2)" opacity="0.4">
+        <!-- Handle -->
+        <path d="M20 40 L20 80 Q25 85 30 80 L30 40 Z" fill="{color}" filter="url(#tap-glow)" />
+        <!-- Body -->
+        <path d="M0 80 L50 80 L50 100 L0 100 Z" fill="#334155" />
+        <!-- Spout -->
+        <path d="M40 100 Q40 130 20 130" stroke="{color}" stroke-width="8" fill="none" stroke-linecap="round" filter="url(#tap-glow)" />
+        <!-- Drip -->
+        <circle cx="20" cy="140" r="5" fill="{color}" filter="url(#tap-glow)">
+            <animate attributeName="cy" from="140" to="512" dur="3s" repeatCount="indefinite" />
+            <animate attributeName="opacity" from="1" to="0" dur="3s" repeatCount="indefinite" />
+        </circle>
+    </g>
     """

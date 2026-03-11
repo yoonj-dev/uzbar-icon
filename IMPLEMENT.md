@@ -1,16 +1,20 @@
-# 구현 사항 (Implementation) - Unified Asset Generator (UAG)
+# 구현 사항 (Implementation) - "on Tap" Asset Engine
 
-## 1. 파일명 규칙 최적화
-- **로고 파일명 변경**: `logo-horizontal.svg`에서 `-horizontal`을 제거하여 `logo.svg`로 일원화하였습니다.
-- **서비스명 제거**: 파일명 충돌을 방지하기 위해 서비스 이름을 포함하던 접두사(`uz{Name}-`)를 모든 에셋에서 제거하였습니다. (사용자 요청에 따라 고정된 파일명 규칙 사용)
-- **접미사 로직**:
-  - `not include_bg`일 때 `-transparent`가 파일명에 붙도록 구현.
-  - `not include_icon`일 때 `-no-img`가 파일명에 붙도록 구현.
+## 1. "on Tap" 시각적 요소 구현
+- **Brick Pattern**: `common.get_brick_pattern()`을 통해 미세한 0.05 불투명도의 벽돌 패턴을 SVG 배경에 삽입.
+- **Neon beer tap**: `common.get_beer_tap_components()`를 통해 탭 핸들, 바디, 스파우트 및 **애니메이션 물방울(Drop)** 요소를 구현.
+- **Neon Glow**: `feFlood`와 `feComposite`를 조합하여 서비스 고유 컬러에 최적화된 네온 광조 효과 구현.
 
-## 2. 모듈화 구현
-- `cli.py`, `icon.py`, `logo.py`, `common.py`로 역할을 분리하여 유지보수성을 확보하였습니다.
-- `argparse`를 통해 `--center`, `--bottom`, `--below` 등 위치 제어 옵션을 통합 관리합니다.
+## 2. 텍스트 레이아웃 최적화
+- **Prefix 제거**: 모든 생성 로직에서 'uz' 텍스트를 제거하고 서비스 명칭만 노출.
+- **가독성 향상**: 아이콘 내 텍스트 폰트 사이즈를 80 -> 100으로 확대하고, 로고의 텍스트 너비 추정 방식을 텍스트만 존재할 때에 맞춰 재조정.
 
-## 3. 설치 및 패키징
-- `pyproject.toml`을 통해 `pip install .` 및 `uzbar` 커맨드라인 도구 설치를 지원합니다.
-- `cli` 모듈 누락 문제(ModuleNotFoundError)를 수정하여 정상 설치를 보장합니다.
+## 3. 기능성 모듈
+- **React TSX 지원**: `react_gen.py`를 통해 SVG를 React 컴포넌트로 변환. 
+  - `stroke-width` -> `strokeWidth` 등 속성 변환 로직 포함.
+  - `{...props}` 지원으로 스타일 커스터마이징 가능.
+- **통합 CLI**: `ontap --all --react` 등의 명령어로 모든 조합의 자산을 한 번에 생성 가능.
+
+## 4. 버그 수정 및 안정화
+- **CLI 경로 처리**: `Path` 객체와 `str` 객체 혼용으로 발생하던 속성 에러 수정.
+- **패키징**: `pyproject.toml`에 모든 신규 모듈(`react_gen`)을 등록하여 `pip install` 환경 보장 및 `ontap` 명령 지원.

@@ -6,7 +6,7 @@
 
 ## 2. 옵션 처리 및 검증
 - `--bg / --no-bg` 옵션에 따라 `-transparent` 접미사가 파일명에 정확히 반영되는지 검증합니다.
-- `pip install -e .` 상태에서 `uzbar --all` 호출 시 결과물 구조가 `Service/icon-*.svg`, `Service/logo.svg` 형태가 되는지 확인합니다.
+- `pip install -e .` 상태에서 `ontap --all` 호출 시 결과물 구조가 `Service/icon-*.svg`, `Service/logo.svg` 형태가 되는지 확인합니다.
 
 ## 3. 문서 최신화
 - `IMPLEMENT.md` 및 `TEST.md`를 최종 파일명 규칙에 맞게 업데이트하여 작업 완료를 명시합니다.
